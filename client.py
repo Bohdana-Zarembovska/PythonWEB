@@ -11,6 +11,9 @@ message = input("Enter something to send : ")
 client_socket.send(message.encode())
 print("Message sent")
 
+echo_message = client_socket.recv(1024)
+
+print(f"[Echo message] - {echo_message.decode()}")
 print("\n___________________________\n")
 
 client_socket.close()
