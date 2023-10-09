@@ -32,12 +32,14 @@ print(f"[Accepted from {client_address}]")
 
 message = bytes()
 
-message = connection.recv(1024)
-if not message:
-    print("[Receive error]: empty message") 
+while message.decode() != "CLOSE":
+    message = connection.recv(1024)
+    if not message:
+        print("[Receive error]: empty message")
+        continue
 
-printMessage(message)
-wait(5)
-sendMessage(message, connection)
+    printMessage(message)
+    wait(5)
+    sendMessage(message, connection)
 
 connection.close()
