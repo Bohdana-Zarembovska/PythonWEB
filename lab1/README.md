@@ -1,2 +1,0 @@
-# PythonWEB
-PythonWEB labs
