@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python lab2</title>
+</head>
+<body>
+    <h1>Lab 2</h1>
+
+    <form action="./cgi-bin/form_handler.py" method="POST">
+        <p>
+            <label>
+                Name:
+                <input type="text" name="name">
+            </label>
+            <label>
+                Age:
+                <input type="number" name="age">      
+            </label>
+        </p>
+        <p>
+            Your favourite author of horror films?
+            <label>
+                <input type="radio" name="author" value="eggers"> Robert Eggers    
+            </label>
+            <label>
+                <input type="radio" name="author" value="aster">  Ari Aster       
+            </label>
+        </p>
+        <p>
+            Your favorite direction in art:
+            <ul>
+                <li>
+                    <label><input type="checkbox" name="painting">painting</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="architecture">architecture</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="sculpture">sculpture</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="music">music</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="performing">performing</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="literature">literature</label>
+                </li>
+                <li>
+                    <label><input type="checkbox" name="cinema">cinema</label>
+                </li>
+            </ul>
+        </p>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <form action="./cgi-bin/hello.py" method="POST">
+        <input type="hidden" value="deleteCookies">
+        <button type="submit">Delete Cookies</button>
+    </form>
+</body>
+</html>
