@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, json, make_response, session
+from flask import Flask, flash, render_template, request, redirect, url_for, json, make_response, session
 import os
 from datetime import datetime
 from app import app
+from app.forms import LoginForm, ChangePasswordForm
 import random
 
 my_skills = ["Data Science/Machine Learning", "Pandas/NumPy/SciPy/Matplotlib", "MySQL", "HTML & CSS", "Jupyter Notebook", "Python", "OpenCV", "Deep Learning"]
@@ -25,77 +26,82 @@ def home():
 
 @app.route('/education')
 def education():
-    user_os, user_agent, current_time = get_user_info()
-    return render_template('education.html', user_os=user_os, user_agent=user_agent, current_time=current_time)
+    return render_template('education.html')
+
+@app.route('/skills')
+def cv():
+    return render_template('skills.html')
 
 @app.route('/hobbies')
 def hobbies():
-    user_os, user_agent, current_time = get_user_info()
-    return render_template('hobbies.html', user_os=user_os, user_agent=user_agent, current_time=current_time)
+    return render_template('hobbies.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    user_os, user_agent, current_time = get_user_info()
+    form = LoginForm()
 
-    login_failure = False
+    filename = os.path.join(app.static_folder, 'data', 'auth.json')
+    with open(filename) as auth_file:
+        data = json.load(auth_file)
 
-    if request.method == "POST":
-        filename = os.path.join(app.static_folder, 'data', 'auth.json')
-        with open(filename) as test_file:
-            data = json.load(test_file)
+    json_name = data['name']
+    json_password = data['password']
 
-        json_name = data['name']
-        json_password = data['password']
-
-        form_name = request.form.get("name")
-        form_password = request.form.get("password")
+    if form.validate_on_submit():
+        form_name = form.username.data
+        form_password = form.password.data
+        form_remember = form.remember.data
 
         if json_name == form_name and json_password == form_password:
-            user_id = random.randint(1, 10000)
-            session['userId'] = user_id
-            session['name'] = form_name
-            session['password'] = form_password
-            return redirect(url_for('info', user=session['name']))
+            if form_remember:
+                user_id = random.randint(1, 10000)
+                session['userId'] = user_id
+                session['name'] = form_name
+                session['password'] = form_password
+                flash("Вхід виконано", category=("success"))
+                return redirect(url_for('info', user=session['name']))
+            else:
+                flash("Введіть дані ще раз та виберіть пункт ''запам'ятати''", category=("warning"))
+                return redirect(url_for('home'))
         else:
-            login_failure = True
+            flash("Вхід не виконано", category=("warning"))
+            return redirect(url_for('login'))
     
-    return render_template('login.html', user_os=user_os, user_agent=user_agent, current_time=current_time, login_failed=login_failure)
+    return render_template('login.html', form=form)
 
 @app.route('/info', methods=['GET'])
 def info():
     cookies = request.cookies
-    user_os, user_agent, current_time = get_user_info()
-    return render_template('info.html', user_os=user_os, user_agent=user_agent, current_time=current_time, cookies=cookies)
+    form = ChangePasswordForm()
+
+    return render_template('info.html', cookies=cookies, form=form)
 
 @app.route('/logout')
 def logout():
-    session.pop('userId')
     session.pop('name')
+    session.pop('userId')
     session.pop('password')    
     return redirect(url_for("login"))
 
 @app.route('/skills/')
 @app.route('/skills/<int:id>')
 def skills(id=None):
-    user_os, user_agent, current_time = get_user_info()
     if id is not None:
         if 0 <= id < len(my_skills):
             skill = my_skills[id]
-            return render_template('skills.html', skill=skill, user_os=user_os, user_agent=user_agent, current_time=current_time)
+            return render_template('skills.html', skill=skill)
         else:
-            return render_template('skills.html', user_os=user_os, user_agent=user_agent, current_time=current_time)
+            return render_template('skills.html')
     else:
-        return render_template('skills.html', skills=my_skills, total_skills=len(my_skills), user_os=user_os, user_agent=user_agent, current_time=current_time)
+        return render_template('skills.html', skills=my_skills, total_skills=len(my_skills))
 
 def set_cookie(key, value, max_age):
-    user_os, user_agent, current_time = get_user_info()
-    response = make_response(render_template('cookie_added.html', user_os=user_os, user_agent=user_agent, current_time=current_time))
+    response = make_response(redirect('info'))
     response.set_cookie(key, value, max_age=max_age)
     return response
 
 def delete_cookie(key):
-    user_os, user_agent, current_time = get_user_info()
-    response = make_response(render_template('cookie_deleted.html', user_os=user_os, user_agent=user_agent, current_time=current_time))
+    response = make_response(redirect('info'))
     response.delete_cookie(key)
     return response
 
@@ -105,6 +111,7 @@ def add_cookie():
     value = request.form.get('value')
     max_age = int(request.form.get('max_age'))
 
+    flash("Cookie додано", category=("success"))
     return set_cookie(key, value, max_age)
 
 @app.route('/remove_cookie/', methods=['GET'])
@@ -114,19 +121,19 @@ def remove_cookie():
     key = request.args.get('key')
 
     if key:
-        user_os, user_agent, current_time = get_user_info()
-        response = make_response(render_template('cookie_deleted.html', user_os=user_os, user_agent=user_agent, current_time=current_time))
+        flash("Cookie видалено", category=("dark"))
+        response = make_response(redirect(url_for('info')))
         response.delete_cookie(key)
         return response
     else:
-        user_os, user_agent, current_time = get_user_info()
-        response = make_response(render_template('error.html', user_os=user_os, user_agent=user_agent, current_time=current_time))
+        flash("Error", category=("info"))
+        response = make_response(redirect(url_for('info')))
         return response
 
 @app.route('/remove_all_cookies', methods=['GET'])
 def remove_all_cookies():
-    user_os, user_agent, current_time = get_user_info()
-    response = make_response(render_template('cookies_deleted.html', user_os=user_os, user_agent=user_agent, current_time=current_time))
+    flash("Cookies видалено", category=("danger"))
+    response = make_response(redirect(url_for('info')))
     cookies = request.cookies
 
     for key in cookies.keys():
@@ -135,24 +142,41 @@ def remove_all_cookies():
 
     return response
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/change_password', methods=['POST'])
 def change_password():
-    if request.method == 'POST':
-        old_password = request.form.get('old_password')
-        new_password = request.form.get('new_password')
+    form = ChangePasswordForm()
 
-        if session.get('password') == old_password:
-            session['password'] = new_password
-            return render_template('password_changed.html')
-        else:
-            return render_template('password_change_failed.html')
+    if form.validate_on_submit():
+        new_password = form.new_password.data
+        confirm_new_password = form.confirm_password.data
 
-    return render_template('change_password.html')
+        if new_password != '':
+            if new_password == confirm_new_password:
+                session['password'] = new_password
 
-@app.route('/password_changed')
-def password_changed():
-    return render_template('password_changed.html')
+                filename = os.path.join(app.static_folder, 'data', 'auth.json')
+                with open(filename) as auth_file:
+                    data = json.load(auth_file)
 
-@app.route('/password_change_failed')
-def password_change_failed():
-    return render_template('password_change_failed.html')
+                new_admin_data = {
+                    'name': data['name'],
+                    'password': new_password
+                }
+
+                new_passwd_json = json.dumps(new_admin_data, indent=2)
+
+                with open(filename, "w") as outfile:
+                    outfile.write(new_passwd_json)
+
+                flash("Пароль змінено", category=("success"))
+                return redirect(url_for('info'))
+
+            flash("Пароль ідентичний попередньому", category=("danger"))
+            return redirect(url_for('info'))
+
+    flash("Пароль не введено", category=("danger"))
+    return redirect(url_for('info'))
+
+@app.route("/main")
+def main():
+    return redirect(url_for("home"))
