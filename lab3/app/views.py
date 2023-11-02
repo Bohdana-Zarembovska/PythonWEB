@@ -2,7 +2,8 @@ from flask import Flask, flash, render_template, request, redirect, url_for, jso
 import os
 from datetime import datetime
 from app import app
-from app.forms import LoginForm, ChangePasswordForm
+from app.forms import LoginForm, ChangePasswordForm, AddReview
+from app.database import db, Review
 import random
 
 my_skills = ["Data Science/Machine Learning", "Pandas/NumPy/SciPy/Matplotlib", "MySQL", "HTML & CSS", "Jupyter Notebook", "Python", "OpenCV", "Deep Learning"]
@@ -176,6 +177,52 @@ def change_password():
 
     flash("Пароль не введено", category=("danger"))
     return redirect(url_for('info'))
+
+@app.route("/review")
+def review():
+    review_form = AddReview()
+    review_list = db.session.query(Review).all()
+
+    return render_template('review.html', review_form=review_form, review_list=review_list)
+
+@app.route("/add_review", methods=['POST'])
+def add_review():
+    review_form = AddReview()
+
+    if review_form.validate_on_submit():
+        name_field = review_form.name_field.data
+        description = review_form.description.data
+        new_review = Review(title=name_field, description=description, complete=False)
+        db.session.add(new_review)
+        db.session.commit()
+        flash("Створення виконано", category=("success"))
+        return redirect(url_for("review"))
+    
+    flash("Помилка при створенні", category=("danger"))
+    return redirect(url_for("review"))
+
+@app.route("/update_review/<int:review_id>")
+def update_review(review_id=None):
+    review = Review.query.get_or_404(review_id)
+
+    review.complete = not review.complete
+    db.session.commit()
+    flash("Оновлення виконано", category=("success"))
+    return redirect(url_for("review"))
+
+@app.route("/delete_review/<int:review_id>")
+def delete_review(review_id=None):
+    review = Review.query.get_or_404(review_id)
+
+    db.session.delete(review)
+    db.session.commit()
+    flash("Видалення виконано", category=("success"))
+    return redirect(url_for("review"))
+
+@app.route("/read_review/<int:review_id>")
+def read_review(review_id=None):
+    review = Review.query.get_or_404(review_id)
+    return redirect(url_for("review"))
 
 @app.route("/main")
 def main():

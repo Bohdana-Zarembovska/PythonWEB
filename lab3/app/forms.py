@@ -23,3 +23,8 @@ class ChangePasswordForm(FlaskForm):
         EqualTo('new_password', message='Паролі повинні співпадати')
     ])
     submit = SubmitField("Змінити")
+
+class AddReview(FlaskForm):
+    name_field = StringField("", validators=[DataRequired("Це поле обовʼязкове"), Length(min=1, max=100)])
+    description = StringField("", validators=[DataRequired("Це поле обовʼязкове"), Length(min=1, max=200)])
+    submit = SubmitField("Створити")
