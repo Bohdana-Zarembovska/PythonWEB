@@ -2,8 +2,8 @@ from flask import Flask, flash, render_template, request, redirect, url_for, jso
 import os
 from datetime import datetime
 from app import app
-from app.forms import LoginForm, ChangePasswordForm, AddReview
-from app.database import db, Review
+from app.forms import LoginForm, ChangePasswordForm, CreateTodo
+from app.database import db, Todo
 import random
 
 my_skills = ["Data Science/Machine Learning", "Pandas/NumPy/SciPy/Matplotlib", "MySQL", "HTML & CSS", "Jupyter Notebook", "Python", "OpenCV", "Deep Learning"]
@@ -178,51 +178,52 @@ def change_password():
     flash("Пароль не введено", category=("danger"))
     return redirect(url_for('info'))
 
-@app.route("/review")
-def review():
-    review_form = AddReview()
-    review_list = db.session.query(Review).all()
+@app.route("/todo")
+def todo():
+    todo_form = CreateTodo()
+    todo_list = db.session.query(Todo).all()
 
-    return render_template('review.html', review_form=review_form, review_list=review_list)
+    return render_template('todo.html', todo_form=todo_form, todo_list=todo_list)
 
-@app.route("/add_review", methods=['POST'])
-def add_review():
-    review_form = AddReview()
+@app.route("/create_todo", methods=['POST'])
+def create_todo():
+    todo_form = CreateTodo()
 
-    if review_form.validate_on_submit():
-        name_field = review_form.name_field.data
-        description = review_form.description.data
-        new_review = Review(title=name_field, description=description, complete=False)
-        db.session.add(new_review)
+    if todo_form.validate_on_submit():
+        new_task = todo_form.new_task.data
+        description = todo_form.description.data
+        new_todo = Todo(title=new_task, description=description, complete=False)
+        db.session.add(new_todo)
         db.session.commit()
         flash("Створення виконано", category=("success"))
-        return redirect(url_for("review"))
+        return redirect(url_for("todo"))
     
     flash("Помилка при створенні", category=("danger"))
-    return redirect(url_for("review"))
+    return redirect(url_for("todo"))
 
-@app.route("/update_review/<int:review_id>")
-def update_review(review_id=None):
-    review = Review.query.get_or_404(review_id)
+@app.route("/read_todo/<int:todo_id>")
+def read_todo(todo_id=None):
+    todo = Todo.query.get_or_404(todo_id)
+    return redirect(url_for("todo"))
 
-    review.complete = not review.complete
+@app.route("/update_todo/<int:todo_id>")
+def update_todo(todo_id=None):
+    todo = Todo.query.get_or_404(todo_id)
+
+    todo.complete = not todo.complete
     db.session.commit()
     flash("Оновлення виконано", category=("success"))
-    return redirect(url_for("review"))
+    return redirect(url_for("todo"))
 
-@app.route("/delete_review/<int:review_id>")
-def delete_review(review_id=None):
-    review = Review.query.get_or_404(review_id)
+@app.route("/delete_todo/<int:todo_id>")
+def delete_todo(todo_id=None):
+    todo = Todo.query.get_or_404(todo_id)
 
-    db.session.delete(review)
+    db.session.delete(todo)
     db.session.commit()
     flash("Видалення виконано", category=("success"))
-    return redirect(url_for("review"))
+    return redirect(url_for("todo"))
 
-@app.route("/read_review/<int:review_id>")
-def read_review(review_id=None):
-    review = Review.query.get_or_404(review_id)
-    return redirect(url_for("review"))
 
 @app.route("/main")
 def main():
