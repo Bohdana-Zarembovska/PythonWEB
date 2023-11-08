@@ -22,9 +22,9 @@ class ChangePasswordForm(FlaskForm):
         DataRequired("Це поле обов'язкове"),
         EqualTo('new_password', message='Паролі повинні співпадати')
     ])
-    submit = SubmitField("Змінити")
+    submit = SubmitField("Change")
 
-class AddReview(FlaskForm):
-    name_field = StringField("", validators=[DataRequired("Це поле обовʼязкове"), Length(min=1, max=100)])
-    description = StringField("", validators=[DataRequired("Це поле обовʼязкове"), Length(min=1, max=200)])
-    submit = SubmitField("Створити")
+class CreateTodo(FlaskForm):
+    new_task = StringField(" ", validators=[DataRequired("You should writesomething here"), Length(min=1, max=100)])
+    description = StringField(" ", validators=[DataRequired("You should writesomething here too"), Length(min=1, max=200)])
+    submit = SubmitField("Create")
