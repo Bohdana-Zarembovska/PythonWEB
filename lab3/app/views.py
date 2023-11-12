@@ -2,9 +2,10 @@ from flask import Flask, flash, render_template, request, redirect, url_for, jso
 import os
 from datetime import datetime
 from app import app
-from app.forms import LoginForm, ChangePasswordForm, CreateTodo
-from app.database import db, Todo
+from app.forms import LoginForm, ChangePasswordForm, CreateTodo, RegistrationForm
+from app.models import db, Todo
 import random
+from app.models import User
 
 my_skills = ["Data Science/Machine Learning", "Pandas/NumPy/SciPy/Matplotlib", "MySQL", "HTML & CSS", "Jupyter Notebook", "Python", "OpenCV", "Deep Learning"]
 
@@ -37,38 +38,60 @@ def cv():
 def hobbies():
     return render_template('hobbies.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    session.pop('email', None)
+    form = RegistrationForm()
+    
+    if form.validate_on_submit():
+        new_user = User(name=form.username.data, email=form.email.data, password=form.password.data)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash(f"Account created for {form.username.data}!", "success")
+        except:
+            db.session.rollback()
+            flash("Something went wrong!", category="danger")
+        return redirect(url_for("login"))
+    
+    return render_template('register.html', form=form)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if"email" in session:
+        return redirect(url_for("info"))   
+    
     form = LoginForm()
 
-    filename = os.path.join(app.static_folder, 'data', 'auth.json')
-    with open(filename) as auth_file:
-        data = json.load(auth_file)
+    if form.validate_on_submit(): 
+        user = User.query.filter_by(email=form.email.data).first()
+        
+        if user and user.verify_password(form.password.data): 
+            if form.remember.data:
+                session["email"] = form.email.data
+                flash("Logged in successfully!!", category="success")
+                return redirect(url_for("info"))
+                
+            flash("Logged in successfully to about!!", category="success")
+            return redirect(url_for("about_page"))
 
-    json_name = data['name']
-    json_password = data['password']
-
-    if form.validate_on_submit():
-        form_name = form.username.data
-        form_password = form.password.data
-        form_remember = form.remember.data
-
-        if json_name == form_name and json_password == form_password:
-            if form_remember:
-                user_id = random.randint(1, 10000)
-                session['userId'] = user_id
-                session['name'] = form_name
-                session['password'] = form_password
-                flash("Вхід виконано", category=("success"))
-                return redirect(url_for('info', user=session['name']))
-            else:
-                flash("Введіть дані ще раз та виберіть пункт ''запам'ятати''", category=("warning"))
-                return redirect(url_for('home'))
-        else:
-            flash("Вхід не виконано", category=("warning"))
-            return redirect(url_for('login'))
+        flash("Wrong data! Try again!", category="danger")
+        return redirect(url_for("login"))
     
     return render_template('login.html', form=form)
+
+@app.route('/logout', methods=["POST"])
+def logout():
+    session.clear()
+    flash("Logged out successfully!!", category="success")
+    return redirect(url_for("login"))
+
+@app.route('/users')
+def users():
+    return render_template('users.html', users=User.query.all())
+
 
 @app.route('/info', methods=['GET'])
 def info():
@@ -76,13 +99,6 @@ def info():
     form = ChangePasswordForm()
 
     return render_template('info.html', cookies=cookies, form=form)
-
-@app.route('/logout')
-def logout():
-    session.pop('name')
-    session.pop('userId')
-    session.pop('password')    
-    return redirect(url_for("login"))
 
 @app.route('/skills/')
 @app.route('/skills/<int:id>')
