@@ -4,8 +4,8 @@ from flask_migrate import Migrate
 import os
 from sqlalchemy import Integer, String, Boolean, Date, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-from app import db, bcrypt
-
+from app import db, bcrypt, login_manager
+from flask_login import UserMixin
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///flaskdb.db")
 
 
@@ -19,8 +19,11 @@ class Todo(db.Model):
 with app.app_context():
     db.create_all()
 
+@login_manager.user_loader
+def user_loader(user_id):
+    return User.query.get(int(user_id))
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
@@ -34,7 +37,7 @@ class User(db.Model):
 
     @property
     def password(self):
-        return AttributeError("Password is not readable!!")
+        return AttributeError("Password is not readable!")
 
     @password.setter
     def password(self, value):
