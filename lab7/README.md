@@ -1,0 +1,5 @@
+![image](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/19589c1b-9a86-47b9-ba01-d057fbc86bbf)
+![Знімок екрана 2023-11-16 022942](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/9426b96e-837d-4d2c-bcb4-889f740869db)
+![Знімок екрана 2023-11-16 021234](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/2d233baf-9f3c-4c9a-a306-00f85063eaae)
+![Знімок екрана 2023-11-16 020032](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/bb1e8cd0-7aff-4c91-a6a7-765addf34d2c)
+![Знімок екрана 2023-11-16 014001](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/6d909747-e898-49f2-a43e-866780599e97)
