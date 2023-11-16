@@ -1,0 +1,49 @@
+from app import app
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import os
+from sqlalchemy import Integer, String, Boolean, Date, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
+from app import db, bcrypt
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///flaskdb.db")
+
+
+
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    description = db.Column(db.String(200))
+    complete = db.Column(db.Boolean)
+
+with app.app_context():
+    db.create_all()
+
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    image_file: Mapped[str] = mapped_column(String(20), nullable=False, default='image.png')
+    password_hash: Mapped[str] = mapped_column(String(60), nullable=False)
+    
+    def __init__(self, name, email, password):
+        self.username = name
+        self.email = email
+        self.password = password
+
+    @property
+    def password(self):
+        return AttributeError("Password is not readable!!")
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = bcrypt.generate_password_hash(value)
+
+    def verify_password(self, value):
+        return bcrypt.check_password_hash(self.password_hash, value)
+    
+    def __repr__(self) -> str:
+        return f"User({self.username}, {self.email})"
+    
+migrate = Migrate(app, db)
