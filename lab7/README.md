@@ -21,4 +21,3 @@
 6. Сторінка зі всіма юзерами
    ![image](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/9d2f55ba-a50c-4b21-8f62-c239a5a45ab0)
 
-

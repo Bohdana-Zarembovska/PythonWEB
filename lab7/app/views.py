@@ -5,6 +5,7 @@ from app import app
 from app.forms import LoginForm, ChangePasswordForm, CreateTodo, RegistrationForm
 from app.models import db, Todo
 import random
+from flask_login import login_user, current_user, logout_user, login_required
 from app.models import User
 
 my_skills = ["Data Science/Machine Learning", "Pandas/NumPy/SciPy/Matplotlib", "MySQL", "HTML & CSS", "Jupyter Notebook", "Python", "OpenCV", "Deep Learning"]
@@ -40,7 +41,9 @@ def hobbies():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    session.pop('email', None)
+    if current_user.is_authenticated:
+        return redirect(url_for('info_page'))
+    
     form = RegistrationForm()
     
     if form.validate_on_submit():
@@ -56,22 +59,28 @@ def register():
     
     return render_template('register.html', form=form)
 
+@app.route('/account')
+@login_required
+def account():
+    form = ChangePasswordForm()
+    return render_template('account.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if"email" in session:
-        return redirect(url_for("info"))   
+    if current_user.is_authenticated:
+        return redirect(url_for('info_page'))
     
     form = LoginForm()
+
 
     if form.validate_on_submit(): 
         user = User.query.filter_by(email=form.email.data).first()
         
         if user and user.verify_password(form.password.data): 
             if form.remember.data:
-                session["email"] = form.email.data
-                flash("Logged in successfully!!", category="success")
+                login_user(user, remember=form.remember.data)
+                flash("Logged in successfully!", category="success")
                 return redirect(url_for("info"))
                 
             flash("Logged in successfully to about!!", category="success")
@@ -85,7 +94,7 @@ def login():
 @app.route('/logout', methods=["POST"])
 def logout():
     session.clear()
-    flash("Logged out successfully!!", category="success")
+    flash("Logged out successfully!", category="success")
     return redirect(url_for("login"))
 
 @app.route('/users')
