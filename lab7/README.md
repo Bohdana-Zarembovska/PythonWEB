@@ -1,5 +1,23 @@
-![image](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/19589c1b-9a86-47b9-ba01-d057fbc86bbf)
-![Знімок екрана 2023-11-16 022942](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/9426b96e-837d-4d2c-bcb4-889f740869db)
-![Знімок екрана 2023-11-16 021234](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/2d233baf-9f3c-4c9a-a306-00f85063eaae)
-![Знімок екрана 2023-11-16 020032](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/bb1e8cd0-7aff-4c91-a6a7-765addf34d2c)
-![Знімок екрана 2023-11-16 014001](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/6d909747-e898-49f2-a43e-866780599e97)
+1. Заповнення бд та виконання наступних інструкцій при роботі з нею
+<img width="521" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/ca555b4a-b1f0-41a5-84b3-320a8b75b630">
+<img width="377" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/5f8765f7-7cfe-4064-84fc-9debf4e342da">
+<img width="365" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/f68ffcd4-5130-4ade-9899-e5df6e66a736">
+
+2.Приклад успішної реєстрації з результатом в базі даних (видно що останні два паролі захешовані )
+<img width="935" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/31feac2f-70bf-4de0-ab14-aa3ef10ff1fa">
+<img width="907" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/36169804-b3a0-4edc-a73f-639c0f6f8742">
+<img width="629" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/47f593fa-3091-4389-9dde-422ed49d97d7">
+
+3. Приклад невдалої реєстарації
+   ![image](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/2c41124c-4391-4122-89e5-13fa38fbde6d)
+
+4. Приклад успішного логіну
+<img width="431" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/12de30dd-fc4c-4a3f-b12d-53371e0cc680">
+<img width="262" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/7b881707-abdf-4dc0-97e8-99a92f825c92">
+
+5. Приклад невдалого логіну
+   <img width="316" alt="image" src="https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/fd3d9052-0d6a-49e5-a8ad-4644fbc1d6e6">
+
+6. Сторінка зі всіма юзерами
+   ![image](https://github.com/Bohdana-Zarembovska/PythonWEB/assets/125612553/9d2f55ba-a50c-4b21-8f62-c239a5a45ab0)
+
