@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, ValidationError, EqualTo, Regexp
 from app.models import User
+from flask_wtf.file import FileAllowed, FileField 
+from wtforms import TextAreaField
 class LoginForm(FlaskForm):
     email = StringField(label='Email', validators=[DataRequired("Email is required"), Email()])
     password = PasswordField(label='Password', validators=[DataRequired("Password is required")])
@@ -43,6 +45,31 @@ class ChangePasswordForm(FlaskForm):
         EqualTo('new_password', message='Паролі повинні співпадати')
     ])
     submit = SubmitField("Change")
+
+class UpdateAccountForm(FlaskForm):
+    username = StringField(label='User name', validators=[
+            DataRequired("Name is required"),
+            Length(min=4, max=14, message="Min length - 4, max - 14 symbols"),
+            Regexp('^[A-Za-z][A-Za-z0-9_.]*$',0, 'Username must have only lettters, numbers, dots or underscores')
+        ])
+    email = StringField(label='Email', validators=[DataRequired("Email is required"), Email()])
+    picture = FileField('Update profile picture', validators=[FileAllowed(['jpg','png'])])
+    about_me = TextAreaField('About me')
+    submit = SubmitField(label="Update")
+
+    def __init__(self, current_user = None):
+        super().__init__()
+        self.current_user = current_user
+
+    def validate_email(self, field):
+        user = User.query.filter_by(email=field.data).first()
+        if user and self.current_user.email != field.data:
+            raise ValidationError("Email already registered")
+        
+    def validate_username(self, field):
+        user = User.query.filter_by(username=field.data).first()
+        if user and self.current_user.username != field.data:
+            raise ValidationError("Username already in use")
 
 class CreateTodo(FlaskForm):
     new_task = StringField(" ", validators=[DataRequired("You should writesomething here"), Length(min=1, max=100)])

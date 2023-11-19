@@ -6,6 +6,7 @@ from sqlalchemy import Integer, String, Boolean, Date, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from app import db, bcrypt, login_manager
 from flask_login import UserMixin
+from datetime import datetime
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///flaskdb.db")
 
 
@@ -27,8 +28,10 @@ class User(db.Model, UserMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
-    image_file: Mapped[str] = mapped_column(String(20), nullable=False, default='image.png')
+    image: Mapped[str] = mapped_column(String(20), nullable=False, default='image.png')
     password_hash: Mapped[str] = mapped_column(String(60), nullable=False)
+    last_seen: Mapped[datetime] = mapped_column(DateTime, nullable=True, default=datetime.now())
+    about_me: Mapped[str] = mapped_column(String, nullable=True)
     
     def __init__(self, name, email, password):
         self.username = name
