@@ -1,9 +1,13 @@
-{% macro render_field(field) %}
+{% macro render_field(field, data) %}
   
-  {% if field.type in ["StringField", "PasswordField", "DateField", "EmailField", "TextAreaField"] %}
+  {% if field.type != "SubmitField"  %}
   {{ field.label(class="form-label") }}
   {% elif field.type == "BooleanField" %}
   {{ field.label(class="form-check-label") }}
+  {% endif %}
+
+  {% if field.type == "TextAreaField" %}
+    {% set f = field.process_data(data) %}
   {% endif %}
 
   {{ field(**kwargs)| safe }}

@@ -19,8 +19,12 @@
 
                 {% if userId %}
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link text-beige" href={{ url_for('info') }}> Профіль </a></li>
-                {% else %} <!--userId != None-->
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link text-beige" href={{ url_for('login') }}> Увійти </a></li>
+                    
+                {% endif %}
+                {% if show_buttons %}
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link text-beige" href={{ url_for('info') }}> Перейти до info </a></li>
+
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link text-beige" href={{ url_for('logout') }}> Вийти </a></li>
                 {% endif %}
             </ul>
         </div>
