@@ -1,8 +1,7 @@
 {% set menu = {
-    "Освіта": url_for("education"), 
-    "Скіли": url_for("skills"),
-    "Хобі": url_for("hobbies"),
-    "Todo": url_for("todo")
+    "Освіта": url_for("resume.education_page"), 
+    "Скіли": url_for("resume.skills_page"),
+    "Хобі": url_for("resume.hobbies_page"),
 } %}
 
 <!DOCTYPE html>
@@ -12,7 +11,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} Lab3 {% endblock %}</title>
+    <title>{% block title %} Lab10 {% endblock %}</title>
     <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/bootstrap.min.css') }}>
     <script src={{ url_for('static', filename='js/scripts.js') }}></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

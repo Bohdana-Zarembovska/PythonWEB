@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %} Інфо {% endblock %}
+
+{% set username = session['name'] %}
+{% set userId = session['userId'] %}
+
+{% block body %}
+<header class="masthead text-brown text-center mt-4">
+    <div class="container d-flex align-items-center flex-column">
+        <h2>Привіт, {{ username }}!</h2>
+    </div>
+</header>
+<section class="page-section" id="add_cookie">
+    <hr class="bg-brown" style="height: 2px;" >
+    <h2 class="page-section-heading text-center mt-5 text-brown mb-0">Додати Cookie</h2>
+
+    <div class="divider-custom mt-2">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+        <div class="divider-custom-line"></div>
+    </div>
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-8 col-xl-7 align-items-center">
+            <form id="contactForm" action="{{ url_for('cookies.add') }}" method="POST">
+                <div class="form-floating mb-3">
+                    <input class="form-control" 
+                            id="key" 
+                            type="text"
+                            name="key"
+                    <label for="name">Ключ</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" 
+                            id="value" 
+                            type="text"
+                            name="value"
+                    <label for="password">Значення</label>
+                </div>        
+                <div class="form-floating mb-3">
+                    <input class="form-control" 
+                            id="max_age" 
+                            type="number"
+                            name="max_age" required
+                    <label for="password">Термін дії</label>
+                </div>                    
+                <button class="btn btn-beige mt-2 text-brown btn-xl" id="submitButton" type="submit">Створити</button>
+            </form>
+        </div>
+    </div>
+</section>
+<hr class="bg-brown" style="height: 2px;" >
+<section class="page-section mt-5" id="delete_cookie">
+    <h2 class="page-section-heading text-center text-brown mb-0">Видалити Cookie</h2>
+    <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+        <div class="divider-custom-line"></div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <form id="contactForm" action="{{ url_for('cookies.delete') }}" method="POST">
+                <div class="form-floating mt-2 mb-3">
+                    <input class="form-control" 
+                            id="key_to_remove" 
+                            type="text"
+                            name="key"
+                    <label for="name">Ключ</label>
+                </div>
+                <button class="btn btn-beige text-brown mt-2 btn-xl" id="submitButton" type="submit">Видалити</button>
+            </form>
+        </div>
+    </div>
+</section>
+<hr class="bg-brown" style="height: 2px;" >
+<section class="page-section" id="cookie_table">
+    <h2 class="page-section-heading mt-5 text-center text-brown mb-0">Таблиця Cookie</h2>
+    <div class="divider-custom mt-2">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+        <div class="divider-custom-line"></div>
+    </div>
+    <div class="row">
+        <div class="container" >
+            <table class="table table-secondary" align="center" style="width: 750px;">
+                <thead class="table-primary">
+                    <tr class = "cookiesTable">
+                        <th class = "cookiesTable" style="width: 150px;">Key</th>
+                        <th class = "cookiesTable" style="width: 600px;">Value</th>
+                        <th class = "cookiesTable"><form id="contactForm" action="{{ url_for('cookies.delete') }}" method="GET" novalidate>
+                            <button class="btn btn-brown btn-xl" id="submitButton"  type="submit">Видалити</button>
+                        </form></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set non_session_cookies = {} %}
+                    {% for key, value in cookies.items() %}
+                        {% if key != 'session' %}
+                            {% set _ = non_session_cookies.update({key: value}) %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if non_session_cookies|length > 0 %}
+                        {% for key, value in non_session_cookies.items() %}
+                            <tr class = "cookiesTable">
+                                <td class = "cookiesTable">{{ key }}</td>
+                                <td class = "cookiesTable">{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="2"><strong>Cookie відсутні</strong></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<hr class="bg-brown" style="height: 2px;" >
+
+{% endblock %}
