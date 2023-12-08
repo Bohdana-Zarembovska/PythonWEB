@@ -9,7 +9,6 @@ from flask import current_app
 from PIL import Image
 import secrets
 import os
-from werkzeug.utils import secure_filename
 
 def save_picture(form_picture):
     hex_token = secrets.token_hex(8)
