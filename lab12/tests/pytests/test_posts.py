@@ -166,3 +166,61 @@ def test_post_page(client, login, post_id):
     assert TEST_POST_TEXT in data
     assert "#newtag" in data
     assert "newcat" in data
+
+def test_create_post_empty_text(client, login):
+    response = client.post(
+        "/posts/new",
+        data=dict(
+            title=TEST_POST_TITLE,
+            text="",
+            category=1,
+            tags=1
+        )
+    )
+    assert response.status_code == 200 
+    assert b"Text is required" in response.data    
+
+def test_failed_login(client):
+    response = client.post("/login", data=dict(
+        login="nonexistent_user",
+        password="wrong_password",
+        remember='y'
+    ))
+    assert response.status_code == 200 
+    assert b"Invalid username or password" in response.data
+
+def test_update_nonexistent_post(client, login):
+    response = client.post(
+        "/posts/update/999",
+        data=dict(
+            title=TEST_POST_TITLE,
+            text=TEST_POST_TEXT + " New",
+            category=1,
+            tags=1
+        )
+    )
+    assert response.status_code == 404
+
+def test_delete_nonexistent_post(client, login):
+    response = client.post("/posts/delete/999")
+    assert response.status_code == 404
+
+def test_create_post_no_category(client, login):
+    response = client.post(
+        "/posts/new",
+        data=dict(
+            title=TEST_POST_TITLE,
+            text=TEST_POST_TEXT,
+            category=None,
+            tags=1
+        )
+    )
+    assert response.status_code == 200 
+    assert b"Category is required" in response.data    
+
+def test_create_invalid_category(client, login):
+    response = client.post("/posts/categories/new", data=dict(
+        cat_name=""
+    ))
+    assert response.status_code == 200
+    assert b"Invalid form!" in response.data
