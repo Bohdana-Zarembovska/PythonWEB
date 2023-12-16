@@ -224,3 +224,45 @@ def test_create_invalid_category(client, login):
     ))
     assert response.status_code == 200
     assert b"Invalid form!" in response.data
+
+def test_delete_category(client, login):
+    category = PostCategory(name="Test Category")
+    db.session.add(category)
+    db.session.commit()
+
+    response = client.post(f"/posts/categories/delete/{category.id}")
+
+    assert response.status_code == 302
+    assert not PostCategory.query.get(category.id)
+    assert b'Test Category' not in response.data
+    assert b'Category (Test Category) deleted!' in response.data
+
+def test_delete_tag(client, login):
+    tag = Tag(name="Test Tag")
+    db.session.add(tag)
+    db.session.commit()
+
+    response = client.post(f"/posts/tags/delete/{tag.id}")
+
+    assert response.status_code == 302
+    assert not Tag.query.get(tag.id)
+    assert b'Test Tag' not in response.data
+    assert b'Tag (#Test Tag) deleted!' in response.data
+
+def test_delete_category_error(client, login):
+    response = client.post("/posts/categories/delete/999")
+
+    assert response.status_code == 302
+    assert b'Error!' in response.data
+    assert not PostCategory.query.get(999)
+
+def test_delete_tag_error(client, login):
+    response = client.post("/posts/tags/delete/999")
+
+    assert response.status_code == 302
+    assert b'Error!' in response.data
+    assert not Tag.query.get(999)
+
+
+
+
