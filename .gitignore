@@ -1,3 +1,10 @@
 
 *.pyc
 *.pyc
+*.ini
+lab13/instance/test-db.sqlite
+lab13/migrations/env.py
+lab13/migrations/README
+lab13/migrations/script.py.mako
+lab13/instance/site-user-10-image
+lab13/requirements.txt
