@@ -26,7 +26,7 @@ def revoke_token():
     jti, token_type = token_data["jti"], token_data["type"]
     jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES[token_type])
 
-    return jsonify(message=f"Token operation successful. {token_type} access revoked.")
+    return jsonify(msg=f"{token_type.capitalize()} token successfully revoked")
 
 @auth_api_bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -42,7 +42,7 @@ def check_password(email, password):
         return email
 
 @jwt_manager.token_in_blocklist_loader
-def is_token_revoked(jwt_payload):
+def is_token_revoked(jwt_header, jwt_payload: dict):
     jti = jwt_payload["jti"]
     token_in_redis = jwt_redis_blocklist.get(jti)
     return token_in_redis is not None

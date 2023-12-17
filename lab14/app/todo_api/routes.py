@@ -5,21 +5,25 @@ from ..extensions import db
 from .service import TodoMapper, TodoValidator
 from . import todo_api_bp
 from flask import Blueprint
+from flask_jwt_extended import jwt_required
 
 todo_api_bp = Blueprint('todo_api_bp', __name__)
 
 @todo_api_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_all_todos_api():
     todos = Todo.query.all()
     todos_dict = [todo.to_dict() for todo in todos]
     return jsonify(todos_dict)
 
 @todo_api_bp.route('/<int:id>', methods=['GET'])
+@jwt_required()
 def get_todo_api(id):
     todo = Todo.query.get_or_404(id)
     return jsonify(todo.to_dict())
 
 @todo_api_bp.route('/', methods=['POST'])
+@jwt_required()
 def create_todo_api():
     data = request.get_json()
     form = TodoForm(data=data)
@@ -42,6 +46,7 @@ def create_todo_api():
         return jsonify({"message": "Validation error", "errors": form.errors}), 400
 
 @todo_api_bp.route('/<int:id>', methods=['PUT'])
+@jwt_required()
 def update_todo_api(id):
     todo = Todo.query.get_or_404(id)
     data = request.get_json()
@@ -62,6 +67,7 @@ def update_todo_api(id):
         return jsonify({"message": "Validation error", "errors": form.errors}), 400
 
 @todo_api_bp.route('/<int:id>', methods=['DELETE'])
+@jwt_required()
 def delete_todo_api(id):
     todo = Todo.query.get_or_404(id)
 
