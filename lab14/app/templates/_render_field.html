@@ -1,0 +1,23 @@
+{% macro render_field(field, data) %}
+  
+  {% if field.type != "SubmitField"  %}
+  {{ field.label(class="form-label") }}
+  {% elif field.type == "BooleanField" %}
+  {{ field.label(class="form-check-label") }}
+  {% endif %}
+
+  {% if field.type == "TextAreaField" %}
+    {% set f = field.process_data(data) %}
+  {% endif %}
+
+  {{ field(**kwargs)| safe }}
+ 
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li class="text-danger">{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endmacro %}
