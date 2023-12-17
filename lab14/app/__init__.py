@@ -1,5 +1,5 @@
 from flask import Flask, url_for
-from .extensions import db, migrate, bcrypt, login_manager
+from .extensions import db, migrate, bcrypt, login_manager, jwt_manager
 from config import config
 from app.auth.views import auth_bp
 from app.resume.views import resume_bp
@@ -7,6 +7,7 @@ from app.cookies.views import cookies_bp
 from app.todo.views import todo_bp
 from app.posts.views import posts_bp
 from app.todo_api.routes import todo_api_bp
+from app.auth_api.routes import auth_api_bp
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -16,6 +17,7 @@ def create_app(config_name='default'):
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    jwt_manager.init_app(app)
 
     @app.before_request
     def before_request():
@@ -28,5 +30,6 @@ def create_app(config_name='default'):
         app.register_blueprint(todo_bp, url_prefix='/todo')
         app.register_blueprint(posts_bp, url_prefix='/posts')
         app.register_blueprint(todo_api_bp, url_prefix='/api/todos')
+        app.register_blueprint(auth_api_bp, url_prefix='/api/auth')
 
         return app
