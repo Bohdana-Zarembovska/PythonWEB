@@ -14,12 +14,12 @@ def get_all_todos_api():
     todos_dict = [todo.to_dict() for todo in todos]
     return jsonify(todos_dict)
 
-@todo_api_bp.route('/todos/<int:id>', methods=['GET'])
+@todo_api_bp.route('/<int:id>', methods=['GET'])
 def get_todo_api(id):
     todo = Todo.query.get_or_404(id)
     return jsonify(todo.to_dict())
 
-@todo_api_bp.route('/todos', methods=['POST'])
+@todo_api_bp.route('/', methods=['POST'])
 def create_todo_api():
     data = request.get_json()
     form = TodoForm(data=data)
@@ -41,7 +41,7 @@ def create_todo_api():
     else:
         return jsonify({"message": "Validation error", "errors": form.errors}), 400
 
-@todo_api_bp.route('/todos/<int:id>', methods=['PUT'])
+@todo_api_bp.route('/<int:id>', methods=['PUT'])
 def update_todo_api(id):
     todo = Todo.query.get_or_404(id)
     data = request.get_json()
@@ -61,7 +61,7 @@ def update_todo_api(id):
     else:
         return jsonify({"message": "Validation error", "errors": form.errors}), 400
 
-@todo_api_bp.route('/todos/<int:id>', methods=['DELETE'])
+@todo_api_bp.route('/<int:id>', methods=['DELETE'])
 def delete_todo_api(id):
     todo = Todo.query.get_or_404(id)
 
