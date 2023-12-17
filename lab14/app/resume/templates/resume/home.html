@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} Домашня {% endblock %}
+
+{% block body %}
+<header class="header mt-4">
+    <div class="container text-brown">
+        <h3 class=" text-brown">Трохи інформації про мене:</h3>
+    </div>
+</header>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/avatar.jpg') }}" class="rounded-circle shadow transition" width="270" alt="avatar">
+        </div>
+        <div class="col-md-8 text-brown mt-3" >
+            <h1>Богдана Зарембовська</h1>
+            <p class="text-primary-emphasis text-brown">
+                Вітаю на сторінці мого резюме! Мене звати Богдана і я навчаюсь в Прикарпатському національному
+                університеті імені Василя Стефаника на спеціальності 121-інженерія програмного забезпечення. Цю спеціяльність 
+                я вибрала через мою любов до математики, техніки та складних завдань. Якщо Ви хочете дізнатись більше про мене,
+                ласкаво просимо до мого портфоліо!
+            </p>
+            <hr class="bg-brown">
+        </div>
+    </div>
+</div>
+{% endblock %}

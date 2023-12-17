@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "_render_field.html" import render_field %}
+{% block title %}Categories{% endblock %}
+{% block body %}
+
+<div class="d-flex justify-content-between mt-5" style="gap: 10px;">
+  <div class="btn-beige text-brown" role="group" aria-label="Basic radio toggle button group">
+    <a href="#" class="btn btn-beige text-brown" style="padding: 5px 25px;">
+      Categories
+    </a>
+    <a href="{{url_for('posts.tags_page')}}" class="btn btn-beige text-brown " style="padding: 5px 25px;">
+      Tags
+    </a>
+  </div>
+
+  <button class="btn btn-beige text-brown" style="padding: 5px 25px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+    New
+  </button>
+</div>
+
+
+<div class="accordion mb-3 mt-2" id="accordionExample">
+  <div class="accordion-item">
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" >
+      <div class="accordion-body">
+        <form class="row justify-content-center" method="post" action="{{url_for('posts.add_category')}}">
+          {{ form.csrf_token }}
+          <div class="col-4">
+            {{ render_field(form.name, class="form-control") }}
+          </div>
+          <div class="col-2">
+              {{ render_field(form.submit, class="btn btn-beige text-brown", style="width: 100%; height: 100%") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<table class="table table-hover text-center">
+  <thead>
+    <tr class="table-light">
+      <th scope="col"> </th>
+      <th scope="col">Name</th>
+      <th scope="col"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for category in categories %}
+      <tr>
+          <td>●</td>
+          <td>{{category.name}}</td>
+          <td> 
+            <form method="POST" action="{{url_for('posts.delete_category', id=category.id)}}">
+              <button type="submit" class="btn btn-beige text-brown">Delete</button>
+            </form>
+          </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
