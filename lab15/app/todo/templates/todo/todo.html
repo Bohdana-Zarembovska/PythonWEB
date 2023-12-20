@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
+{% block title %}Todo{% endblock %}
+{% block body %}
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-9 col-xl-10">
+        <div class="text-center text-brown pb-3 mt-5">
+            <h4>Things I must To Do</h4>
+        </div>
+
+        <form class="row justify-content-center" method="post">
+            {{ form.csrf_token }}
+            <div class="col-3">
+                {{ render_field(form.title, class="form-control") }}
+            </div>
+            <div class="col-2">
+                {{ render_field(form.due_date, class="form-control") }}
+            </div>
+            <div class="col-1 mt-2">
+                {{ render_field(form.submit, class="btn btn-beige text-brown mt-4", style="width: 100%;") }}
+            </div>
+        </form>
+
+        <table class="table mb-4 mt-5 text-center text-brown">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th>Todo item</th>
+                    <th>Due date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todo_list %}
+                <tr style="vertical-align: baseline;">
+                    <th scope="row">● {{ todo.id }}</th>
+                    <td>{{ todo.title }}</td>
+                    <td>
+                    {% if todo.due_date %}
+                        {{ todo.due_date }}
+                    {% else %}
+                        -
+                    {% endif %}
+                    </td>
+                    <td>
+                    {% if todo.complete == False %}
+                    <div class="bg-beige" style="height: 30px;">In progress</div>
+                    {% else %}
+                    <div class="bg-beige" style="height: 30px;">Completed</div>
+                    {% endif %}
+                    </td>
+                    <td>
+                    <a class="btn btn-beige text-brown" href="{{ url_for('todo.update', id=todo.id) }}">Update</a>
+                    <a class="btn btn-beige text-brown" href="{{ url_for('todo.delete', id=todo.id) }}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        
+      </div>
+    </div>
+
+{% endblock %}

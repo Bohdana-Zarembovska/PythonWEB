@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_render_field.html" import render_field %}
+{% block title %}Post{% endblock %}
+{% block body %}
+<div class="row justify-content-center align-items-center h-100">
+  {% if post.enabled or post.user_id == current_user.id %}
+    <div>
+      {% if post.user %}
+        <div class="d-flex justify-content-end mb-2" style="gap: 10px;">
+          <a href="{{url_for('posts.update_post', id=post.id)}}" class="btn btn-beige text-brown">Update</a>
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-beige text-brown" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Delete
+          </button>
+        </div>
+      {% endif %}
+
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            {% if post.image %}
+              <div class="col-6">
+                  <img class="post-image" src="{{url_for('posts.static', filename='posts_image/' + post.image)}}" style = "width: 100%;">
+              </div>
+            {% endif %}
+            <div class="col d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center">
+                <h2 class="card-title text-brown">{{ post.title }}</h2>
+                {% if post.type.name == "low" %}
+                  <h6 class="text-brown">{{ post.type.name }}</h6>
+                {% elif post.type.name == "medium" %}
+                  <h6 class="text-brown">{{ post.type.name }}</h6>
+                {% else %}
+                  <h6 class="text-brown">{{ post.type.name }}</h6>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                <h6 class="text-brown">{{ post.category.name }}</h6>
+              </div>
+              {% if post.user %}
+                <h6 class="card-subtitle mb-2 text-muted">{{ post.user.email }}</h6>
+              {% endif %}
+              <p class="card-text flex-1  ">{{ post.text }}</p>
+    
+              <div class="mt-2 mb-5">
+                {% for tag in post.tags %}
+                  <span class="text-brown">#{{tag.name}}</span>
+                {% endfor %}
+              </div>
+
+              <div class="d-flex justify-content-end align-items-center">
+                <p class="text-body-tertiary mb-0">{{ post.created.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+              </div>  
+              <div class="d-flex justify-content-end mb-2" style="gap: 10px;">
+                <a href="{{url_for('posts.update_post', id=post.id)}}" class="btn btn-beige text-brown">Update</a>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-beige text-brown" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  Delete
+                </button>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete post ({{post.id}})</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this post?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-beige text-brown" data-bs-dismiss="modal">Close</button>
+            <form action="{{url_for('posts.delete_post', id=post.id)}}" method="post">
+              <button type="submit" class="btn btn-beige text-brown">Delete post</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endif %}
+</div>
+{% endblock %}

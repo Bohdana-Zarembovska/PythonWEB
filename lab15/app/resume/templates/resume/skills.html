@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if skill %}
+        {{ skill }} Навичка
+    {% else %}
+        Всі навички
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if skill %}
+    <header class="masthead text-brown col-md-12 mt-5 ">
+        <div class="container d-flex align-items-center flex-column">
+            <h1>{{ skill }}</h1>
+            <h3>Так, це одна з моїх навичок</h3>
+        </div>
+    </header>
+    {% elif skills %}
+    <header class="header mt-4">
+        <div class="container text-brown">
+            <h3 class=" text-brown">Список моїх навичок:</h3>
+        </div>
+    </header>
+    <div class="container mt-4 d-flex">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/skills.jpg') }}" alt="skills" width="400px" height="350px" style="margin-left: 10%;"/>
+        </div>
+        <header class="masthead text-brown col-md-8 mt-3" style="margin-left: 15%;">
+            <h2>Навички - це ключ до досягнень!</h2>
+            <ul>
+                {% for s in skills %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+            <p>Тож, всього я маю {{ skills | length }} навичок!!!</p>
+        </header>
+    </div>
+    {% else %}
+    <header class="masthead text-brown text-center">
+        <div class="container d-flex align-items-center flex-column mt-5">
+        <h2>Ви невірно ввели ID навички...</h2>
+        <p>Спробуєте знову?</p>
+        </div>
+    </header>
+    {% endif %}
+{% endblock %}

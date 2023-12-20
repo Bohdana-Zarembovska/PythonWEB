@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% from "_render_field.html" import render_field %}
+{% block title %} Навчання {% endblock %}
+{% set show_buttons = True %}
+{% set userId = session['userId'] %}
+
+{% block body %}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="">
+            <p class="page-section-heading mt-5 text-center text-brown mb-0"  style="font-size: larger">Profile Settings</p>
+            <form action="{{url_for('auth.update_user')}}" method="POST" novalidate enctype="multipart/form-data">
+                {{ info_form.csrf_token }}
+                <div class="form-group mt-2">
+                    {{ render_field(info_form.username, class="form-control", value=current_user.username) }}
+                </div>
+                <div class="form-group mt-3">
+                    {{ render_field(info_form.email, class="form-control", value=current_user.email) }}
+                </div>
+                <div class="form-group mt-3">
+                    {{ render_field(info_form.about_me, current_user.about_me, class="form-control", style="height: 128px;") }}
+                </div>
+                <div class="form-group mt-3">
+                    {{ render_field(info_form.picture, class="form-control") }}
+                </div>
+                {{ render_field(info_form.submit, class="btn btn-beige text-brown mt-3") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3 border-left">
+        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+            <img class="rounded-circle mt-5" src="{{url_for('auth.static', filename='profile_pics/' + current_user.image_file) }}" height="150" width="150px">
+            <span class="font-weight-bold text-brown mt-1" style="font-size: x-large">{{current_user.username}}</span>
+            <span class="text-brown-light">{{current_user.email}}</span>
+            <span class="text-brown-light mt-3"> Last seen on: <br/> {{current_user.last_seen.strftime('%Y-%m-%d %H:%M:%S')}}</span>
+        </div>
+    </div>
+</div>
+<hr class="bg-brown mt-5" style="height: 2px;" >
+<section class="page-section" id="change_password" style="padding-bottom: 120px;">
+    <p class="page-section-heading mt-5 text-center text-brown mb-0" style="font-size: larger">Change password</p>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="">
+                <form action="{{url_for('auth.change_password')}}" method="POST" novalidate>
+                    {{ password_form.csrf_token }}
+                    <div class="form-group mt-2">
+                        Old password{{ render_field(password_form.old_password, class="form-control mt-1") }}
+                    </div>
+                    <div class="form-group mt-3">
+                        New password{{ render_field(password_form.new_password, class="form-control mt-1") }}
+                    </div>
+                    <div class="form-group mt-3">
+                        Confirm new password{{ render_field(password_form.confirm_password, class="form-control mt-1") }}
+                    </div>
+                    {{ render_field(password_form.submit, class="btn btn-beige text-brown mt-3")}}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
